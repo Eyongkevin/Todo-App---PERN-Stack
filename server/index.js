@@ -4,13 +4,22 @@ const pool = require('./db').pool;
 const app = express();
 const port = 5000;
 
-//middleware: .use is used to add middlewares.
+/** MIDDLEWARE
+ * Middlewares break down your application into smaller bits of behavior.
+ * And are called one-by-one in a sequence.
+ * Express uses '.use' to add middlewares
+ */
 app.use(cors());
 app.use(express.json({
+    // Allow us to access request.body and get json data
+    // Since there are converted to text/plain when sent.
     type: ['application/json', 'text/plain']
-})); // Allow us to access request.body and get json data
+})); 
 
-// ROUTES //
+/** ROUTING
+ * Break the application into smaller functions that execute base on condition.
+ *  
+ */
 
 // create a todo
 // - async allows us to use 'await' which will wait till this function execute before proceeding.
@@ -102,6 +111,7 @@ app.delete('/todo/:id', async(req, res) =>{
     
 });
 
+// Start Express server at port and logs  that it has started.
 app.listen(port, ()=>{
     console.log("Server has started on port ", port);
 });
