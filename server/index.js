@@ -26,10 +26,10 @@ app.use(express.json({
 // - 
 app.post('/todo', async(req, res) =>{
     try{
-        const {description, progress, status} = req.body;
+        const {description, done_timestamp, status} = req.body;
         const newTodo = await pool.query(
-            'INSERT INTO todo (description, progress, status) VALUES($1, $2, $3) RETURNING *',
-            [description, progress, status]
+            'INSERT INTO todo (description, status, done_timestamp) VALUES($1, $2, $3) RETURNING *',
+            [description, status, done_timestamp]
         );
         res.json(newTodo.rows[0]);
 

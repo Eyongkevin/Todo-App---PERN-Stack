@@ -1,38 +1,81 @@
-.App {
-  text-align: center;
+*{
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+html,body,#app{
+  height:100%;
+  margin:0;
+  padding:0;
+  font-size:14px;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+body{
+  background: #eee;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+h1{
+  font-weight: 200;
+  color: #3b414c;
+  font-size: 20px;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+.app {
+  white-space: nowrap;
+  height:100%;
+}
+.list {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  white-space: normal;
+  height: 100%;
+  width: 20%;
+  padding: 0 20px;
+  overflow: auto;
   }
+.list:not(:last-child):after{
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 99%;
+  background: linear-gradient(to bottom, #eee 0%, #ccc 50%, #eee 100%) fixed;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  /* Card */
+.card {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  width: 100%;
+  padding: 10px 10px 10px 15px;
+  margin: 0 0 10px 0;
+  overflow: auto;
+  border: 1px solid #e5e5df;
+  border-radius: 3px;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
 }
-
-.App-link {
-  color: #61dafb;
+.checklist__task:first-child {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: dashed 1px #ddd;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.checklist__task--remove:after{
+  display: inline-block;
+  color: #d66;
+  content: "+";
+}
+    
+.card-header{
+  background-color: white;
+  border: 0;
+  height: 9px;
+  margin-top:-20px;
+}
+.IconBtns{
+  margin-left: 10px;
 }
