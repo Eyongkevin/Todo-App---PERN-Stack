@@ -1,8 +1,10 @@
 const express = require('express');
 const cors = require('cors');
+const mustache = require('mustache');
+const logger = require('morgan');
 const pool = require('./db').pool;
 const app = express();
-const port = 5000;
+const PORT = 5000;
 
 /** MIDDLEWARE
  * Middlewares break down your application into smaller bits of behavior.
@@ -15,10 +17,9 @@ app.use(express.json({
     // Since there are converted to text/plain when sent.
     type: ['application/json', 'text/plain']
 })); 
-
+app.use(logger('dev'));  // Set logger to monitor requests
 /** ROUTING
  * Break the application into smaller functions that execute base on condition.
- *  
  */
 
 // create a todo
@@ -92,8 +93,6 @@ app.put('/todo/status/:id', async(req, res) =>{
     }catch(err){
         console.error(err.message);
     }
-    
-
 })
 
 // delete a todo
@@ -111,7 +110,16 @@ app.delete('/todo/:id', async(req, res) =>{
     
 });
 
+// 400 bad request if none above matches.
+app.use((req,res) =>{
+    res.statusCode = 400;
+    res.end("Error! Bad Request");
+})
+
 // Start Express server at port and logs  that it has started.
-app.listen(port, ()=>{
-    console.log("Server has started on port ", port);
+app.listen(PORT, ()=>{
+    const serverAlert = mustache.render("Server has started on port {{port}}",{
+        port: PORT
+    });
+    console.log(serverAlert);
 });

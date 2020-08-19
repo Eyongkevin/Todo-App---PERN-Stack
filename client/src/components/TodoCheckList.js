@@ -1,24 +1,38 @@
 import React, {Fragment} from 'react';
+import { XCircleFillIcon } from '@primer/octicons-react'
 
 
 const TodoCheckList =(props)=>{
 
     let tasks = props.tasks.map((task,idx) =>(
         <li key={`task-${idx}`} className="checklist__task">
-            <input type="checkbox" defaultChecked={task.done} />
-            {task.name}
-            <a href="#" className="checklist__task--remove" />
+            <div className="row">
+                <div className="col-1">
+                    <input type="checkbox" defaultChecked={task.done} />
+                </div>
+                <div className="col-9">
+                    {task.name}
+                </div>
+                <div className="col-1">
+                    <a href="#" >
+                        <XCircleFillIcon className="checklist__task--remove" />
+                    </a>
+                </div>
+            </div>
+            
         </li>
     ));
 
     return(
         <Fragment>
             <div className="checklist">
-                <ul>{tasks}</ul>
+                <ul className="list-group list-group-flush">
+                    {tasks}
+                </ul>
             </div>
         </Fragment>
-
     )
 }
 
 export default TodoCheckList;
+
