@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from 'react'
+import {KebabHorizontalIcon} from '@primer/octicons-react'
 
 
 
@@ -7,10 +8,11 @@ const Status =(props)=>{
     const {todo_id} = props;
 
     const statusBtnTypes = {
-        'Task':"secondary",
-        'In Progress': "primary",
-        'Done': "success",
-        'Stuck': "danger"
+        'Task'         :"info",
+        'Do Today'     : "secondary",
+        'In Progress'  : "primary",
+        'Done'         : "success",
+        'Stuck'        : "danger"
     }
 
     const StatusUpdate =(e)=>{
@@ -45,21 +47,21 @@ const Status =(props)=>{
 
     return(
         <Fragment>
-            <div className="dropdown">
-            <button className={`btn btn-${statusBtnTypes[status]} btn-sm dropdown-toggle`} type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {status}
-            </button>
-            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                {Object.keys(statusBtnTypes).map(s =>(
-                    <a 
-                    className="dropdown-item" 
-                        href="#" 
-                        key={s}
-                        onClick={(e)=>StatusUpdate(e)}>{s}
-                    </a>
-                ))}
-            </div>
-            </div>
+            <span className="dropdown IconBtns">
+                <a href="#" className={`btn btn-sm  py-0 px-0`} style={{fontSize: 0.1}} type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <KebabHorizontalIcon />
+                </a>
+                <span className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                    {Object.keys(statusBtnTypes).map(s =>(
+                        <a 
+                        className="dropdown-item" 
+                            href="#" 
+                            key={s}
+                            onClick={(e)=>StatusUpdate(e)}>{s}
+                        </a>
+                    ))}
+                </span>
+            </span>
         </Fragment>
     )
 }

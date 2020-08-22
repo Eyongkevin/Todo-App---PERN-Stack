@@ -52,6 +52,7 @@ ul {
   z-index: 1;
   background: #fff;
   width: 100%;
+  min-height: 110px;
   padding: 10px 10px 10px 15px;
   margin: 0 0 10px 0;
   overflow: auto;
@@ -85,4 +86,7 @@ ul {
   padding : 10px;
   margin-top: 5px;
   border-radius: 3px;
+}
+.dropdown-menu{
+  font-size: 9px;
 }

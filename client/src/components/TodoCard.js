@@ -2,14 +2,14 @@ import React, { Fragment, useState} from 'react';
 import {ChevronUpIcon, 
         ChevronDownIcon,
         PencilIcon,
-        ListUnorderedIcon,
         TrashIcon} from '@primer/octicons-react'
 
 import marked from 'marked';
 
 
 import TodoCheckList from './TodoCheckList';
-import { stageColors } from '../utils/colors'
+import { stageColors } from '../utils/colors';
+import Status  from './Status';
 
 
 const TodoCard =(props)=>{
@@ -38,6 +38,24 @@ const TodoCard =(props)=>{
         e.preventDefault();
         setShowDetail(!showDetail)
     }
+    const deleteTodo =(e,id) =>{
+        e.preventDefault();
+
+        fetch(`http://localhost:5000/todo/${id}`,{
+            method: 'DELETE'
+        })
+            .then(response =>{
+                return response.json();
+            })
+            .then(data =>{
+                console.log(data);
+                window.location = '/';
+                // It's wise to mimimize HTTP request.
+                //getAllTodos();
+                //setTodos(todos.filter((todo) => todo.todo_id !== data.todo_id));
+
+            });
+    }
 
 
     return(
@@ -50,10 +68,10 @@ const TodoCard =(props)=>{
                         <a href="#" onClick={(e)=> onChevronClick(e)}>{arrowBtn}</a>
                         </div>
                         <div className="col-9">
-                            <span className="float-right ">
-                                <a href="#" ><PencilIcon className="IconBtns"  /></a>
-                                <TrashIcon className="IconBtns" />
-                                <ListUnorderedIcon className="IconBtns" />
+                            <span className="float-right">
+                                <a href="#"><PencilIcon className="IconBtns"  /></a>
+                                <a href="#" onClick={(e)=>deleteTodo(e,todo_id)} ><TrashIcon className="IconBtns" /></a>
+                                <Status todo_id={todo_id} status={status} />
                             </span>
                         </div>
                     </div>
