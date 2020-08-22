@@ -29,6 +29,9 @@ const TodoCheckList =(props)=>{
                 <ul className="list-group list-group-flush">
                     {tasks}
                 </ul>
+                <input type="text"
+                    className="checklist--add-task"
+                    placeholder="Type then hit Enter to add a task" />
             </div>
         </Fragment>
     )
