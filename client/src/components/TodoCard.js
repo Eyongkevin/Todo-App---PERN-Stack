@@ -5,6 +5,7 @@ import {ChevronUpIcon,
         TrashIcon} from '@primer/octicons-react'
 
 import marked from 'marked';
+import PropTypes from 'prop-types'
 
 
 import TodoCheckList from './TodoCheckList';
@@ -89,4 +90,12 @@ const TodoCard =(props)=>{
     )
 }
 
+TodoCard.propTypes={
+    card: PropTypes.shape({
+        todo_id: PropTypes.number.isRequired,
+        description: PropTypes.string.isRequired,
+        status: PropTypes.string.isRequired,
+        done_timestamp: PropTypes.string
+    }).isRequired
+}
 export default TodoCard;

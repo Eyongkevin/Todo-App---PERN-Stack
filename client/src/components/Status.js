@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import {KebabHorizontalIcon} from '@primer/octicons-react'
+import PropTypes from 'prop-types';
 
 
 
@@ -64,6 +65,11 @@ const Status =(props)=>{
             </span>
         </Fragment>
     )
+}
+
+Status.propTypes = {
+    todo_id: PropTypes.number.isRequired,
+    status: PropTypes.oneOf(['Task','Do Today','In Progress','Done','Stuck'])
 }
 
 export default Status;
