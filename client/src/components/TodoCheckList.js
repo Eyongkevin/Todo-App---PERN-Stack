@@ -3,9 +3,17 @@ import { XCircleFillIcon } from '@primer/octicons-react'
 import PropTypes from 'prop-types';
 
 
-
+/**
+ * Used to display list of tasks to complete with checkbuttons on each todo
+ * @author Eyong Kevin Enowanyo
+ * @param {array} props.tasks - array of objects containing tasks to complete
+ * 
+ * @example ../docs/examples/TodoCheckList.md
+ */
 const TodoCheckList =(props)=>{
-
+    /*
+    * Construct an html template of tasks with their checkbutton.
+    */
     let tasks = props.tasks.map((task,idx) =>(
         <li key={`task-${idx}`} className="checklist__task">
             <div className="row">
@@ -38,7 +46,7 @@ const TodoCheckList =(props)=>{
         </Fragment>
     )
 }
-
+//TodoCheckList.displayName = "TodoCheckList"
 TodoCheckList.propTypes = {
     tasks: PropTypes.arrayOf(PropTypes.object)
 }

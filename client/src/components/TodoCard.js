@@ -12,6 +12,13 @@ import TodoCheckList from './TodoCheckList';
 import { stageColors } from '../utils/colors';
 import Status  from './Status';
 
+/**
+ * Displays card of tasks with bottons to edit, delete and change status. It also contain the following component
+ * - TodocheclList
+ * @author Eyong Kevin Enowanyo
+ * 
+ * @example ../docs/examples/TodoCard.md
+ */
 
 const TodoCard =(props)=>{
     const [showDetail, setShowDetail] = useState(false);
