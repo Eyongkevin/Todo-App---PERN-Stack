@@ -2,9 +2,7 @@ import React, { Fragment} from 'react';
 import PropTypes from 'prop-types'
 
 import TodoCard from './TodoCard';
-
-//import EditTodo from './EditTodo'
-//import Status from './Status'
+import { STATUS } from '../constants'
 
 /* const titlePropType = (props, propName, componentName)=>{
     if(props[propName]){
@@ -22,8 +20,20 @@ import TodoCard from './TodoCard';
         
     }
 } */
-const ListTodo = ({title, todo}) =>{
-    let cards = Array.prototype.map.call(todo[title],(card) =>{
+
+/**
+ * Creates a list of todos
+ * 
+ * @param { str } props.title - status of the todo
+ * @param { array } props.todo - array containing our todos.
+ *
+ * @author Eyong Kevin Enowanyo
+ * @example ../docs/examples/ListTodos.md  
+ */
+const ListTodos = ({title, todo}) =>{
+    console.log("Todo : ", todo)
+    // Create an array of todo cards. A card display all details of a single todo
+    let cards = todo.map((card) =>{
         return <TodoCard key={card.todo_id} card={card} />             
     });
 
@@ -38,11 +48,17 @@ const ListTodo = ({title, todo}) =>{
     )
 }
 
-ListTodo.propTypes = {
-    title: PropTypes.oneOf(['Task','Do Today','In Progress','Done','Stuck']),
-    todo: PropTypes.objectOf(PropTypes.array).isRequired,
+
+ListTodos.propTypes = {
+    title: PropTypes.oneOf(STATUS),
+    todo: PropTypes.arrayOf(PropTypes.shape({
+        todo_id: PropTypes.number.isRequired,
+        description: PropTypes.string.isRequired,
+        status: PropTypes.string.isRequired,
+        done_timestamp: PropTypes.string
+    })).isRequired,
     id: PropTypes.string,
 }
 
-export default ListTodo;
+export default ListTodos;
 

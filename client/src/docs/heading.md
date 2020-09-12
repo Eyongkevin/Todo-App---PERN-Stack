@@ -1,5 +1,3 @@
-# Todo Planner
----------
 Are you obsessed about tasks planning and want to do things on time? Then, **Todo Planner** is your tool.
 
 This is a tool that helps you plan your tasks easily. You can keep track of your tasks with the various states
@@ -8,11 +6,3 @@ This is a tool that helps you plan your tasks easily. You can keep track of your
 - **In Progress**: Tasks currently working on
 - **Done**: Tasks already completed
 - **Stuck**: Tasks that couldn't be finished due to some issues.
-
-## Installation
-## How to Contribute
-
-## Coming Soon
-This tool is still under development. So far, this is the interface we have
-
-!['home'](./client/public/images/home.png)

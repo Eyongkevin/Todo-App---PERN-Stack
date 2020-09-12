@@ -4,16 +4,15 @@ import PropTypes from 'prop-types';
 
 
 /**
- * Used to display list of tasks to complete with checkbuttons on each todo
- * @author Eyong Kevin Enowanyo
+ * Used to display list of sub-todos to complete with checkbuttons on each todo
+ * 
  * @param {array} props.tasks - array of objects containing tasks to complete
  * 
+ * @author Eyong Kevin Enowanyo
  * @example ../docs/examples/TodoCheckList.md
  */
 const TodoCheckList =(props)=>{
-    /*
-    * Construct an html template of tasks with their checkbutton.
-    */
+    // for each sub-todo, create a template with a checkbotton and a delete icon.
     let tasks = props.tasks.map((task,idx) =>(
         <li key={`task-${idx}`} className="checklist__task">
             <div className="row">
