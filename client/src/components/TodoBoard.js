@@ -1,21 +1,38 @@
 import React, {Fragment, useState, useEffect } from 'react';
 
 import ListTodos from './ListTodos';
+import { STATUS } from '../constants'
 
+/**
+ * Fetch all todos from the server and construct 5 lists of todos base on thier status.
+ * 
+ * @author Eyong Kevin Enowanyo
+ * @example ../docs/examples/TodoBoard.md
+ */
 const TodoBoard = ()=>{
     const [todos, setTodos] = useState(false);
-    const stageOptions = ['Task','Do Today','In Progress','Done','Stuck']; // for testing
 
-    const todoList = Object.keys(todos).map((stage) =>{
+    const todoLists = Object.keys(todos).map((stage) =>{
         return <ListTodos key={stage} id={stage.replace(' ','-')} title={stage} todo={todos[stage]} />
     })
 
-    // Func
+    /** 
+     * Similar to componentDidMount and runs our 'getAllTodos()' on mount.
+     * 
+     * @method
+     */
     useEffect(() =>{
         getAllTodos();
     },[]) // [] here ensure that 'useEffect' only does one request after the component gets mount
     
+    /**
+     * Fetch all todos from the server, use it to create objects of similar todos base on their status,
+     * and update our state 'todos'
+     * @method
+     */
     const getAllTodos = ()=>{
+
+        /** @async*/
         fetch('http://localhost:5000/todos',{
             method: 'GET',
         })
@@ -24,9 +41,10 @@ const TodoBoard = ()=>{
             })
             .then(data =>{
                 console.log(data);
+                // map todos into the different status.
                 let stages = new Object();
-                stageOptions.map((stage) => stages[stage] ={
-                    [stage] : Array.prototype.filter.call(data,(d)=> d.status === stage)
+                STATUS.map((stage) => {
+                    return stages[stage] =Array.prototype.filter.call(data,(d)=> d.status === stage)
                 });
                 console.log(stages);
                 setTodos(stages);
@@ -51,7 +69,7 @@ const TodoBoard = ()=>{
     return(
         <Fragment>
             <div className="app">
-                { todoList }
+                { todoLists }
             </div>
         </Fragment>
     )
@@ -59,3 +77,4 @@ const TodoBoard = ()=>{
 }
 
 export default TodoBoard;
+
