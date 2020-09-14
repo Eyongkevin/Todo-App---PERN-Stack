@@ -70,6 +70,8 @@ The client will start at http://localhost:3000/
 
 
 
+
+
 ## How to Contribute
 **Todo Planner** is an [open source](https://opensource.com/resources/what-open-source) project. I am open to suggestions and willing into extend it to a different level. Enyone willing to contribute is highly welcomed. To contribute, go ahead and:
 
@@ -79,6 +81,12 @@ The client will start at http://localhost:3000/
 - Push to the branch: `git push origin my-new-feature`
 - Submit a pull request
 
+### Uderstand the Components with [React Styleguidist](https://react-styleguidist.js.org/)
+To better understand what is happening with the components and to better contribute, I believe React Styleguidist is the tool to use. Open a terminal in the `./client` and start the server
+```
+$ npm run styleguide
+```
+The server will start at http://localhost:6060/
 ## Coming Soon
 This tool is still under development. So far, this is the interface we have
 
