@@ -26,15 +26,15 @@ import { STATUS } from '../constants'
  * 
  * @param { str } props.title - status of the todo
  * @param { array } props.todo - array containing our todos.
- *
+ * @param { object } props.taskCallbacks - object of callback functions to change the state.
+ * 
  * @author Eyong Kevin Enowanyo
- * @example ../docs/examples/ListTodos.md  
  */
-const ListTodos = ({title, todo}) =>{
-    console.log("Todo : ", todo)
+const ListTodos = (props) =>{
+    const { title, todo} = props
     // Create an array of todo cards. A card display all details of a single todo
     let cards = todo.map((card) =>{
-        return <TodoCard key={card.todo_id} card={card} />             
+        return <TodoCard key={card.todo_id} card={card} taskCallbacks={props.taskCallbacks} />             
     });
 
     return(
@@ -58,6 +58,7 @@ ListTodos.propTypes = {
         done_timestamp: PropTypes.string
     })).isRequired,
     id: PropTypes.string,
+    taskCallbacks: PropTypes.object.isRequired
 }
 
 export default ListTodos;

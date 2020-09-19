@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
  * @param {array} props.tasks - array of objects containing tasks to complete
  * 
  * @author Eyong Kevin Enowanyo
- * @example ../docs/examples/TodoCheckList.md
  */
 const TodoCheckList =(props)=>{
     // for each sub-todo, create a template with a checkbotton and a delete icon.

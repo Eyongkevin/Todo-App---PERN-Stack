@@ -2,14 +2,14 @@ import React, { Fragment } from 'react';
 import './App.css';
 
 // components
-import TodoBoard from './components/TodoBoard'
+import TodoBoardContainer from './containers/TodoBoardContainer'
 
 
 function App() {
   return (
     <Fragment>
       <div className='app'>
-        <TodoBoard />
+        <TodoBoardContainer />
       </div>
       
     </Fragment>

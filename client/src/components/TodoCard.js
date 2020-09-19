@@ -18,13 +18,14 @@ import Status  from './Status';
  * To display a check list of sub-todo tasks to complete.
  * 
  * @param { object } props.card - requirements to create our todo card.
+ * @param { object } props.taskCallbacks - object of callback functions to change the state.
  * 
  * @author Eyong Kevin Enowanyo
- * @example ../docs/examples/TodoCard.md
  */
 
 const TodoCard =(props)=>{
     const [showDetail, setShowDetail] = useState(false);
+    const { taskCallbacks } = props
     const {todo_id, description, done_timestamp, status} = props.card;
     // for testing. List of sub-todo tasks to complete.
     let done = [{name:"setup Ubuntu 16.04",done:true},{name:"Reseach on new methodology and technique",done:false}]
@@ -57,33 +58,7 @@ const TodoCard =(props)=>{
         e.preventDefault(); // prevent default behavior 
         setShowDetail(!showDetail)
     }
-    /**
-     * Delete this todo card from the todo list and refresh.
-     * 
-     * @param { object } e - event.
-     * @param { Number } id - id of todo to delete.
-     */
-    const deleteTodo =(e,id) =>{
-        e.preventDefault();
-
-        /** @async */
-        fetch(`http://localhost:5000/todo/${id}`,{
-            method: 'DELETE'
-        })
-            .then(response =>{
-                return response.json();
-            })
-            .then(data =>{
-                console.log(data);
-                window.location = '/';
-                // It's wise to mimimize HTTP request.
-                //getAllTodos();
-                //setTodos(todos.filter((todo) => todo.todo_id !== data.todo_id));
-
-            });
-    }
-
-
+   
     return(
         <Fragment>
             <div className="card" > 
@@ -96,8 +71,8 @@ const TodoCard =(props)=>{
                         <div className="col-9">
                             <span className="float-right">
                                 <a href="#"><PencilIcon className="IconBtns"  /></a>
-                                <a href="#" onClick={(e)=>deleteTodo(e,todo_id)} ><TrashIcon className="IconBtns" /></a>
-                                <Status todo_id={todo_id} status={status} />
+                                <a href="#" onClick={(e)=>taskCallbacks.deleteTodo(e,todo_id, status)} ><TrashIcon className="IconBtns" /></a>
+                                <Status todo_id={todo_id} status={status} StatusUpdate={taskCallbacks.StatusUpdate}  />
                             </span>
                         </div>
                     </div>
@@ -121,6 +96,7 @@ TodoCard.propTypes={
         description: PropTypes.string.isRequired,
         status: PropTypes.string.isRequired,
         done_timestamp: PropTypes.string
-    }).isRequired
+    }).isRequired,
+    taskCallbacks: PropTypes.object.isRequired
 }
 export default TodoCard;
