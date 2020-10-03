@@ -137,6 +137,21 @@ app.delete('/todo/:id', async(req, res) =>{
      }
  })
 
+  // delete task
+  app.delete('/task/:id', async(req, res) =>{
+    try{
+        const { id } = req.params;
+        const deleteTask = await pool.query(
+            'DELETE FROM todochecklist WHERE todoCheckList_id=$1 RETURNING *',
+            [id]
+        )
+        res.json(deleteTask.rows[0]);
+    }catch(err){
+        console.error(err.message);
+    }
+    
+});
+
 
 // 400 bad request if none above matches.
 app.use((req,res) =>{

@@ -36,7 +36,7 @@ const ListTodos = (props) =>{
     // Create an array of todo cards with all its tasks. A card display all details of a single todo
     let cards = todo.map((card) =>{
         // get all tasks belonging to this card
-        const todoTasks = tasks.filter((task) => task.task_id == card.todo_id)
+        const todoTasks = tasks.filter((task) => task.task_id === card.todo_id)
         return <TodoCard key={card.todo_id} card={card} todoTasks={todoTasks} taskCallbacks={props.taskCallbacks} />             
     });
 

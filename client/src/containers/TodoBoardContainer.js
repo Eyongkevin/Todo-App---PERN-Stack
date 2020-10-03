@@ -4,7 +4,7 @@ import 'whatwg-fetch'
 
 import TodoBoard from '../components/TodoBoard';
 import { STATUS } from '../constants'
-import { get_todo_index } from '../utils/helper_func'
+import { get_todo_index, get_task_index } from '../utils/helper_func'
 
 /***
  * Serve as a container and responsible for fetching and updating the state. 
@@ -89,10 +89,50 @@ class TodoBoardContainer  extends Component{
 
             });
     }
-
-    addTodo = ()=>{
-        ;
+    addTask =(value, id)=>{
+        const body={
+            'task': value,
+            'task_id': id
+        }
+        /** @async */
+        fetch(`http://localhost:5000/task`,{
+            method: 'POST',
+            header:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+            .then(response =>{
+                return response.json();
+            })
+            .then(data =>{
+                console.log(data)
+                // push the new added task to the array of state tasks.
+                const newTask = update(this.state.tasks,
+                    {$push: [data]})
+                this.setState({tasks: newTask})
+            })
     }
+    deleteTask = (e, id)=>{
+        e.preventDefault()
+        /** @async */
+        fetch(`http://localhost:5000/task/${id}`, {
+            method: 'DELETE'
+        })
+            .then(response =>{
+                return response.json();
+            })
+            .then(data =>{
+                console.log(data)
+
+                let task_idx = get_task_index(this.state.tasks, id)
+
+                let newTasks = update(this.state.tasks,
+                    {$splice: [[task_idx, 1]]})
+                this.setState({tasks: newTasks})
+
+            });
+    }   
 
     /**
      * Hit our server with the new status. The server will update the status on the database
@@ -155,7 +195,9 @@ class TodoBoardContainer  extends Component{
                     tasks = {this.state.tasks}
                     taskCallbacks ={{
                         "deleteTodo" : this.deleteTodo.bind(this),
-                        "StatusUpdate" : this.StatusUpdate.bind(this)
+                        "StatusUpdate" : this.StatusUpdate.bind(this),
+                        "deleteTask": this.deleteTask.bind(this),
+                        "addTask": this.addTask.bind(this)
                     }}
                      />
             </Fragment>

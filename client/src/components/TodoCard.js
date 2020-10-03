@@ -34,6 +34,7 @@ const TodoCard =(props)=>{
                     : <ChevronUpIcon  />
     // if showDetail is true, display a check list.
     const detailDisplay = showDetail ? <TodoCheckList tasks={props.todoTasks}
+                                                        todo_id={todo_id}
                                                         taskCallbacks={props.taskCallbacks} 
                                         />: null;
     // color on the left-side of the card.
