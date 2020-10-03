@@ -19,6 +19,7 @@ import Status  from './Status';
  * 
  * @param { object } props.card - requirements to create our todo card.
  * @param { object } props.taskCallbacks - object of callback functions to change the state.
+ * @param { array } props.todoTasks - array containing all tasks belonging to this card
  * 
  * @author Eyong Kevin Enowanyo
  */
@@ -27,14 +28,14 @@ const TodoCard =(props)=>{
     const [showDetail, setShowDetail] = useState(false);
     const { taskCallbacks } = props
     const {todo_id, description, done_timestamp, status} = props.card;
-    // for testing. List of sub-todo tasks to complete.
-    let done = [{name:"setup Ubuntu 16.04",done:true},{name:"Reseach on new methodology and technique",done:false}]
     // Base on the boolean value of showDetail, display a down or up icon.
     const arrowBtn = showDetail
                     ? <ChevronDownIcon  />                  
                     : <ChevronUpIcon  />
     // if showDetail is true, display a check list.
-    const detailDisplay = showDetail ? <TodoCheckList tasks={done} />: null;
+    const detailDisplay = showDetail ? <TodoCheckList tasks={props.todoTasks}
+                                                        taskCallbacks={props.taskCallbacks} 
+                                        />: null;
     // color on the left-side of the card.
     let sideColor = {
         position: 'absolute',
@@ -97,6 +98,7 @@ TodoCard.propTypes={
         status: PropTypes.string.isRequired,
         done_timestamp: PropTypes.string
     }).isRequired,
+    todoTasks: PropTypes.array,
     taskCallbacks: PropTypes.object.isRequired
 }
 export default TodoCard;

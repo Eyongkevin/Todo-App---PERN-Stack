@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import update from 'immutability-helper'
+import 'whatwg-fetch'
 
 import TodoBoard from '../components/TodoBoard';
 import { STATUS } from '../constants'
@@ -14,7 +15,8 @@ class TodoBoardContainer  extends Component{
     constructor(){
         super()
         this.state={
-            todos: {}
+            todos: {},
+            tasks: []
         }
     }
     /**
@@ -39,15 +41,23 @@ class TodoBoardContainer  extends Component{
             })
             .then(data =>{
                 console.log(data);
+                // extract todos and tasks from fetch
+                const todo_data = data.todos
+                const task_data = Object.values(data.tasks)
                 // map todos into the different status.
                 let stages = new Object();
                 STATUS.map((stage) => {
-                    return stages[stage] =Array.prototype.filter.call(data,(d)=> d.status === stage)
+                    return stages[stage] =Array.prototype.filter.call(todo_data,(d)=> d.status === stage)
                 });
                 console.log(stages);
-                this.setState({todos:stages});
+                console.log(task_data)
+                this.setState({todos:stages},
+                    ()=>{
+                        this.setState({tasks: task_data})
+                    });
             });
     }
+    //let done = [{name:"setup Ubuntu 16.04",done:true},{name:"Reseach on new methodology and technique",done:false}]
     /**
      * Delete this todo card from the todo list.
      * 
@@ -78,6 +88,10 @@ class TodoBoardContainer  extends Component{
                 this.setState({todos: newTodos});
 
             });
+    }
+
+    addTodo = ()=>{
+        ;
     }
 
     /**
@@ -138,6 +152,7 @@ class TodoBoardContainer  extends Component{
             <Fragment>
                 <TodoBoard 
                     todos={ this.state.todos }
+                    tasks = {this.state.tasks}
                     taskCallbacks ={{
                         "deleteTodo" : this.deleteTodo.bind(this),
                         "StatusUpdate" : this.StatusUpdate.bind(this)

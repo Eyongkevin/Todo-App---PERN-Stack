@@ -17,6 +17,7 @@ const TodoBoard = (props)=>{
         return <ListTodos key={stage} 
                           id={stage.replace(' ','-')} 
                           title={stage} todo={todos[stage]}
+                          tasks = {props.tasks}
                           taskCallbacks={props.taskCallbacks} />
     })
 
@@ -32,6 +33,7 @@ const TodoBoard = (props)=>{
 
 TodoBoard.propTypes = {
     todos: PropTypes.object.isRequired,
+    tasks: PropTypes.array,
     taskCallbacks: PropTypes.shape({
         deleteTodo : PropTypes.func,
         StatusUpdate: PropTypes.func

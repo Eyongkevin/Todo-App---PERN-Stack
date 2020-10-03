@@ -19,7 +19,7 @@ const TodoCheckList =(props)=>{
                     <input type="checkbox" defaultChecked={task.done} />
                 </div>
                 <div className="col-9">
-                    {task.name}
+                    {task.task}
                 </div>
                 <div className="col-1">
                     <a href="#" >
@@ -46,7 +46,8 @@ const TodoCheckList =(props)=>{
 }
 //TodoCheckList.displayName = "TodoCheckList"
 TodoCheckList.propTypes = {
-    tasks: PropTypes.arrayOf(PropTypes.object)
+    tasks: PropTypes.arrayOf(PropTypes.object),
+    taskCallbacks: PropTypes.object.isRequired
 }
 
 export default TodoCheckList;

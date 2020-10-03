@@ -22,6 +22,8 @@ app.use(logger('dev'));  // Set logger to monitor requests
  * Break the application into smaller functions that execute base on condition.
  */
 
+ //********* TODOS ********* */
+
 // create a todo
 // - async allows us to use 'await' which will wait till this function execute before proceeding.
 // - 
@@ -43,9 +45,16 @@ app.post('/todo', async(req, res) =>{
 app.get('/todos', async(_, res)=>{
     try{
         const allTodos = await pool.query(
-            'SELECT * FROM todo'
+            'SELECT * FROM todo;'
         );
-        res.json(allTodos.rows);
+        const allTasks = await pool.query(
+            'SELECT * FROM todochecklist;'
+        )
+        res.json({
+            'todos': allTodos.rows,
+            'tasks': allTasks.rows
+        });
+
 
     }catch(err){
         console.error(err.message);
@@ -109,6 +118,25 @@ app.delete('/todo/:id', async(req, res) =>{
     }
     
 });
+
+ //********* CHECKLIST ********* */
+ 
+ // add task
+ app.post('/task', async(req, res) =>{
+     try{
+        const {task, task_id} = req.body;
+        const created_at = new Date().toISOString();
+        const addTask = await pool.query(
+             'INSERT INTO todochecklist (task, task_id, created_at) VALUES($1, $2, $3) RETURNING *',
+             [task, task_id, created_at]
+         )
+         res.json(addTask.rows[0])
+     }
+     catch(err){
+         console.error(err.message);
+     }
+ })
+
 
 // 400 bad request if none above matches.
 app.use((req,res) =>{

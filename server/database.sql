@@ -9,9 +9,9 @@ CREATE TABLE todo(
 CREATE TABLE todochecklist(
     todoCheckList_id SERIAL PRIMARY KEY,
     task VARCHAR(255),
-    done BOOLEAN,
-    todo_id int4 DEFAULT 0,
+    done BOOLEAN DEFAULT FALSE,
+    task_id int4 DEFAULT 0,
+    created_at TIMESTAMP,
 
-    UNIQUE (todo_id),
-    FOREIGN KEY (todo_id) REFERENCES todo(todo_id)
-)
+    FOREIGN KEY (task_id) REFERENCES todo(todo_id)
+);
