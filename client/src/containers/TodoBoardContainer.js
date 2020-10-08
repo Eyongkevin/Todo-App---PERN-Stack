@@ -3,11 +3,12 @@ import update from 'immutability-helper'
 import 'whatwg-fetch'
 
 import TodoBoard from '../components/TodoBoard';
-import { STATUS } from '../constants'
+import { STATUS, API_URL } from '../constants'
 import { get_todo_index, get_task_index } from '../utils/helper_func'
 
 /***
  * Serve as a container and responsible for fetching and updating the state. 
+ * Uses prop drilling to pass props down to it's children
  * 
  * @author Eyong Kevin Enowanyo
  */
@@ -33,7 +34,7 @@ class TodoBoardContainer  extends Component{
      */
     getAllTodos(){
         /** @async*/
-        fetch('http://localhost:5000/todos',{
+        fetch(`${API_URL}/todos`,{
             method: 'GET',
         })
             .then(response =>{
@@ -57,19 +58,18 @@ class TodoBoardContainer  extends Component{
                     });
             });
     }
-    //let done = [{name:"setup Ubuntu 16.04",done:true},{name:"Reseach on new methodology and technique",done:false}]
     /**
      * Delete this todo card from the todo list.
      * 
-     * @param { object } e - event.
+     * @param { Object } e - event.
      * @param { Number } id - id of todo to delete.
-     * @param { string } status - the status of the doto to be deleted
+     * @param { String } status - the status of the doto to be deleted
      */
     deleteTodo =(e,id, status) =>{
         e.preventDefault();
 
         /** @async */
-        fetch(`http://localhost:5000/todo/${id}`,{
+        fetch(`${API_URL}/todo/${id}`,{
             method: 'DELETE'
         })
             .then(response =>{
@@ -89,13 +89,18 @@ class TodoBoardContainer  extends Component{
 
             });
     }
+    /**
+     * Add a task to the todo card
+     * @param { String } value - the task to be added
+     * @param { Number } id - todo id
+     */
     addTask =(value, id)=>{
         const body={
             'task': value,
             'task_id': id
         }
         /** @async */
-        fetch(`http://localhost:5000/task`,{
+        fetch(`${API_URL}/task`,{
             method: 'POST',
             header:{
                 'Content-Type': 'application/json'
@@ -113,10 +118,15 @@ class TodoBoardContainer  extends Component{
                 this.setState({tasks: newTask})
             })
     }
+    /**
+     * Delete a task
+     * @param { Object } e - event object
+     * @param { Number } id - task id 
+     */
     deleteTask = (e, id)=>{
         e.preventDefault()
         /** @async */
-        fetch(`http://localhost:5000/task/${id}`, {
+        fetch(`${API_URL}/task/${id}`, {
             method: 'DELETE'
         })
             .then(response =>{
@@ -133,7 +143,51 @@ class TodoBoardContainer  extends Component{
 
             });
     }   
-
+    /**
+     * Toggle task checkbox
+     * 
+     * Here, we first update the state before updating the database.
+     * 
+     * When a user clicks on the checkbox, this callback is fired to update the database.
+     * @param { Number } id - task id
+     */
+    toggleTask = (id) =>{
+        // declare our new done variable. This will be updated later
+        let newDone;
+        //get the index of this task from the state
+        const task_idx = get_task_index(this.state.tasks, id)
+        // update the done property of the task and assign our new done value to 'newDone'
+        const newTasks = update(this.state.tasks,{
+            [task_idx]:{
+                done: {$apply: (done) => {
+                    newDone = !done
+                    return newDone
+                }}
+            }
+        });
+        // New update the state
+        this.setState({tasks: newTasks},
+            ()=>{
+                // After updating the state, update the database.
+                const body ={
+                    newDone
+                }
+                /** @async */
+                fetch(`${API_URL}/task/${id}`, {
+                    method: 'PUT',
+                    header:{
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(response =>{
+                        return response.json();
+                    })
+                    .then(data =>{
+                        console.log(data)        
+                    });
+            })
+    }
     /**
      * Hit our server with the new status. The server will update the status on the database
      * and our state. 
@@ -154,7 +208,7 @@ class TodoBoardContainer  extends Component{
             const body = { "status":chosenStatus };
 
             /** @async */
-            fetch(`http://localhost:5000/todo/status/${todo_id}`,{
+            fetch(`${API_URL}/todo/status/${todo_id}`,{
                 method: 'PUT',
                 header:{
                     'Content-Type': 'application/json'
@@ -194,10 +248,11 @@ class TodoBoardContainer  extends Component{
                     todos={ this.state.todos }
                     tasks = {this.state.tasks}
                     taskCallbacks ={{
-                        "deleteTodo" : this.deleteTodo.bind(this),
-                        "StatusUpdate" : this.StatusUpdate.bind(this),
-                        "deleteTask": this.deleteTask.bind(this),
-                        "addTask": this.addTask.bind(this)
+                        "deleteTodo" : this.deleteTodo,
+                        "StatusUpdate" : this.StatusUpdate,
+                        "deleteTask": this.deleteTask,
+                        "addTask": this.addTask,
+                        "toggleTask": this.toggleTask
                     }}
                      />
             </Fragment>

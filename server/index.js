@@ -152,6 +152,20 @@ app.delete('/todo/:id', async(req, res) =>{
     
 });
 
+app.put('/task/:id', async(req, res) =>{
+    try{
+        const { id } = req.params;
+        const { newDone } = req.body;
+        const updateTask = await pool.query(
+            'UPDATE todochecklist SET done=$1 WHERE todoCheckList_id=$2 RETURNING *',
+            [newDone, id]
+        )
+        res.json(updateTask.rows[0]);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
 
 // 400 bad request if none above matches.
 app.use((req,res) =>{

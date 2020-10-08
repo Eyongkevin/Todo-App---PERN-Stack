@@ -43,7 +43,9 @@ const TodoCheckList =(props)=>{
         <li key={`task-${idx}`} className="checklist__task">
             <div className="row">
                 <div className="col-1">
-                    <input type="checkbox" defaultChecked={task.done} />
+                    <input type="checkbox" defaultChecked={task.done} onChange={
+                        ()=>props.taskCallbacks.toggleTask(task.todochecklist_id)
+                    }  />
                 </div>
                 <div className="col-9">
                     {task.task}
@@ -70,7 +72,7 @@ const TodoCheckList =(props)=>{
                     ref={textInput}
                     className="checklist--add-task"
                     placeholder="Type then hit Enter to add a task"
-                    onKeyPress={ checkInputPressKey.bind(this)} />
+                    onKeyPress={ checkInputPressKey } />
             </div>
         </Fragment>
     )
