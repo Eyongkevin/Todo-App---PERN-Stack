@@ -20,7 +20,6 @@ const TodoCheckList =(props)=>{
      * @param { object } e - event
      */
     const checkInputPressKey=(e)=>{
-
         if(e.key === 'Enter'){
             // If the 'Enter' key was pressed
 
@@ -43,9 +42,10 @@ const TodoCheckList =(props)=>{
         <li key={`task-${idx}`} className="checklist__task">
             <div className="row">
                 <div className="col-1">
-                    <input type="checkbox" defaultChecked={task.done} onChange={
+                    <input type="checkbox" checked={task.done} onChange={
                         ()=>props.taskCallbacks.toggleTask(task.todochecklist_id)
                     }  />
+                    
                 </div>
                 <div className="col-9">
                     {task.task}

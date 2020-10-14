@@ -3,7 +3,7 @@ import update from 'immutability-helper'
 import 'whatwg-fetch'
 
 import TodoBoard from '../components/TodoBoard';
-import { STATUS, API_URL } from '../constants'
+import { STATUS, API_URL, SERVER_ERROR_MESSAGE } from '../constants'
 import { get_todo_index, get_task_index } from '../utils/helper_func'
 
 /***
@@ -68,26 +68,40 @@ class TodoBoardContainer  extends Component{
     deleteTodo =(e,id, status) =>{
         e.preventDefault();
 
-        /** @async */
-        fetch(`${API_URL}/todo/${id}`,{
-            method: 'DELETE'
-        })
-            .then(response =>{
-                return response.json();
-            })
-            .then(data =>{
-                console.log(data);
-                // It's wise to mimimize HTTP request.
+        // Keep the original state of task in case server fails and we need to revert
+        let prevState_todos = this.state.todos
 
-                // Find todo index where it is found in the state
-                let todo_idx = get_todo_index(this.state.todos, id, status)
-                // delete the todo and return a new todos object
-                let newTodos = update(this.state.todos,
-                    {[status]:{$splice: [[todo_idx, 1]]}})
-                // set the state with new todos object
-                this.setState({todos: newTodos});
+        // Find todo index where it is found in the state
+        let todo_idx = get_todo_index(this.state.todos, id, status)
+        // delete the todo and return a new todos object
+        let newTodos = update(this.state.todos,
+            {[status]:{$splice: [[todo_idx, 1]]}})
 
-            });
+        // set the state with new todos object
+        this.setState({todos: newTodos},
+            ()=>{
+                /** @async */
+                fetch(`${API_URL}/tod/${id}`,{
+                    method: 'DELETE'
+                })
+                    .then(response =>{
+                        if(response.ok){
+                            return response.json();
+                        }else{
+                            throw new Error(SERVER_ERROR_MESSAGE + "Failed to delete")
+                        }
+                        
+                    })
+                    .then(data =>{
+                        console.log(data);   
+
+                    })
+                    .catch((error)=>{
+                        console.error(error.message)
+                        // Revert if server fails
+                        this.setState({todos: prevState_todos})
+                    })
+            });   
     }
     /**
      * Add a task to the todo card
@@ -125,23 +139,37 @@ class TodoBoardContainer  extends Component{
      */
     deleteTask = (e, id)=>{
         e.preventDefault()
-        /** @async */
-        fetch(`${API_URL}/task/${id}`, {
-            method: 'DELETE'
-        })
-            .then(response =>{
-                return response.json();
+
+        // Keep the original state of task in case server fails and we need to revert
+        let prevState_tasks = this.state.tasks
+
+        let task_idx = get_task_index(this.state.tasks, id)
+
+        let newTasks = update(this.state.tasks,
+            {$splice: [[task_idx, 1]]})
+        this.setState({tasks: newTasks},
+            ()=>{
+                /** @async */
+                fetch(`${API_URL}/task/${id}`, {
+                    method: 'DELETE'
+                })
+                    .then(response =>{
+                        if(response.ok){
+                            return response.json();
+                        }else{
+                            throw new Error(SERVER_ERROR_MESSAGE + "Failed to delete task")
+                        }
+                        
+                    })
+                    .then(data =>{
+                        console.log(data)
+                    })
+                    .catch((error)=>{
+                        console.error(error.message)
+                        this.setState({tasks: prevState_tasks})
+                    })
             })
-            .then(data =>{
-                console.log(data)
-
-                let task_idx = get_task_index(this.state.tasks, id)
-
-                let newTasks = update(this.state.tasks,
-                    {$splice: [[task_idx, 1]]})
-                this.setState({tasks: newTasks})
-
-            });
+        
     }   
     /**
      * Toggle task checkbox
@@ -153,25 +181,30 @@ class TodoBoardContainer  extends Component{
      */
     toggleTask = (id) =>{
         // declare our new done variable. This will be updated later
-        let newDone;
+        // and used in our fetch
+        let body ={
+            newDone: null
+        }
+
+        // Keep the original state of task in case server fails and we need to revert
+        let prevState_task = this.state.tasks
+
         //get the index of this task from the state
         const task_idx = get_task_index(this.state.tasks, id)
         // update the done property of the task and assign our new done value to 'newDone'
         const newTasks = update(this.state.tasks,{
             [task_idx]:{
                 done: {$apply: (done) => {
-                    newDone = !done
-                    return newDone
+                    body.newDone = !done
+                    return body.newDone
                 }}
             }
         });
+        
         // New update the state
         this.setState({tasks: newTasks},
             ()=>{
                 // After updating the state, update the database.
-                const body ={
-                    newDone
-                }
                 /** @async */
                 fetch(`${API_URL}/task/${id}`, {
                     method: 'PUT',
@@ -181,11 +214,22 @@ class TodoBoardContainer  extends Component{
                     body: JSON.stringify(body)
                 })
                     .then(response =>{
-                        return response.json();
+                        if(response.ok){
+                            return response.json();
+                        }else{
+                            // if server failed, throw and error
+                            throw new Error(SERVER_ERROR_MESSAGE + "Failed to toggle task checkbox")
+                        }
+                        
                     })
                     .then(data =>{
                         console.log(data)        
-                    });
+                    })
+                    .catch((error) =>{
+                        // revert if any error 
+                        console.error(error.message)
+                        this.setState({tasks: prevState_task})
+                    })
             })
     }
     /**
@@ -197,48 +241,64 @@ class TodoBoardContainer  extends Component{
      * @param { String } status - todo's current status
      */
     StatusUpdate =(e,todo_id, status)=>{
-        try{
-            e.preventDefault();
-            const chosenStatus = e.target.innerHTML;
-            //setStatus(statusTxt);
-            if(status === chosenStatus)
-                // if status is the same, do nothing
-                return;
+        e.preventDefault();
+        const chosenStatus = e.target.innerHTML;
+        if(status === chosenStatus)
+        // if status is the same, do nothing
+        return;
 
-            const body = { "status":chosenStatus };
+        // Keep the original state of task in case server fails and we need to revert
+        const prevState_todos = this.state.todos
+    
+        // Find todo index where it is found in the state
+        let todo_idx = get_todo_index(this.state.todos, todo_id, status)
 
-            /** @async */
-            fetch(`${API_URL}/todo/status/${todo_id}`,{
-                method: 'PUT',
-                header:{
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(body)
-            })
-                .then(response =>{
-                    return response.json();
-                })
-                .then(data =>{
-                    console.log(data);
-
-                    // Find todo index where it is found in the state
-                    let todo_idx = get_todo_index(this.state.todos, todo_id, status)
-                    // delete the todo from current state and add to new state
-                    let newTodos = update(this.state.todos,
-                        {
-                            [status]:{$splice: [[todo_idx, 1]]},
-                            [chosenStatus]:{$push: [data]}
-                        }
-                    )
-                    
-                    // set the state with new todos object
-                    this.setState({todos: newTodos});
-                });
-        }catch(err){
-            console.error(err.message);
-        }
+        // update the todo's status and get a new copy of the todos state
+        const newTodos = update(this.state.todos,{
+            [status]: {
+                [todo_idx]:{
+                    status:{$set: chosenStatus}
+                }
+            }
+        }) 
         
+        // delete updated todo under the current status position and return it
+        const newTodo = newTodos[status].splice(todo_idx, 1)
+        // add the deleted todo to the new status position
+        const newUpdatedTodos = update(newTodos, {
+            [chosenStatus]:{$push: newTodo}
+            
+        })
+        // Update state
+        this.setState({todos: newUpdatedTodos},
+            ()=>{
+                // Update database
+                const body = { "status":chosenStatus };
 
+                /** @async */
+                fetch(`${API_URL}/todo/status/${todo_id}`,{
+                    method: 'PUT',
+                    header:{
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(response =>{
+                        if(response.ok){
+                            return response.json();
+                        }else{
+                            throw new Error(SERVER_ERROR_MESSAGE + "Failed to update status")
+                        }                       
+                    })
+                    .then(data =>{
+                        console.log(data);
+                    })
+                    .catch((error)=>{
+                        console.error(error.message);
+                        // revert if server fails
+                        this.setState({todos: prevState_todos})
+                    })
+            });
     }
     
     render(){
