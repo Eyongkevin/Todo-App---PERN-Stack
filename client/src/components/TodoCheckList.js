@@ -2,6 +2,8 @@ import React, {Fragment, useRef, useEffect} from 'react';
 import { XCircleFillIcon } from '@primer/octicons-react'
 import PropTypes from 'prop-types';
 
+import { TASK_COLORS } from '../constants/index'
+
 
 /**
  * Used to display list of sub-todos to complete with checkbuttons on each todo
@@ -48,16 +50,19 @@ const TodoCheckList =(props)=>{
     }
 
     // for each sub-todo, create a template with a checkbotton and a delete icon.
-    let tasks = props.tasks.map((task,idx) =>(
-        <li key={`task-${idx}`} className="checklist__task">
-            <div className="row">
+    let tasks = props.tasks.map((task,idx) =>{
+        // @TODO: Probaly save colors for each task so that they won't change each time this component re-renders
+        const task_color = TASK_COLORS[Math.floor(Math.random() * TASK_COLORS.length)]
+
+        return <li key={`task-${idx}`} className="checklist__task">
+            <div className="row" style={{backgroundColor: task_color}}>
                 <div className="col-1">
                     <input type="checkbox" checked={task.done} onChange={
                         ()=>props.taskCallbacks.toggleTask(task.todochecklist_id)
                     }  />
                     
                 </div>
-                <div className="col-9">
+                <div className="col-9" >
                     {task.task}
                 </div>
                 <div className="col-1">
@@ -70,7 +75,7 @@ const TodoCheckList =(props)=>{
             </div>
             
         </li>
-    ));
+    });
 
     return(
         <Fragment>
