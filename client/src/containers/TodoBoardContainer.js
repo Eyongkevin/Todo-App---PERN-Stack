@@ -131,6 +131,9 @@ class TodoBoardContainer  extends Component{
                     {$push: [data]})
                 this.setState({tasks: newTask})
             })
+            .catch((err)=>{
+                console.log(SERVER_ERROR_MESSAGE)
+            })
     }
     /**
      * Delete a task

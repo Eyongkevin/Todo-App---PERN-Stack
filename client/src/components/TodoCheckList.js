@@ -1,4 +1,4 @@
-import React, {Fragment, useRef} from 'react';
+import React, {Fragment, useRef, useEffect} from 'react';
 import { XCircleFillIcon } from '@primer/octicons-react'
 import PropTypes from 'prop-types';
 
@@ -13,6 +13,19 @@ import PropTypes from 'prop-types';
 const TodoCheckList =(props)=>{
     // to use the input object
     const textInput = useRef(null)
+
+    /**
+     * Called only when the props.task length changes.
+     * It clears the input value only when a successful add tasks was performed
+     * 
+     * @TODO: It also clears when a task delete is done - Need to be fixed to prevent this.
+     */
+    useEffect(()=>{
+        // clear the input value and focus using its ref only when props changes
+        textInput.current.value = '';
+        textInput.current.focus();
+    },[props.tasks.length])
+
     /**
      * Whenever a button is pressed, check if it's 'Enter' button, then 
      * call a callback if the input value is not zero. Then, clear the input value and focus
@@ -24,14 +37,11 @@ const TodoCheckList =(props)=>{
             // If the 'Enter' key was pressed
 
             if(e.target.value.length == 0 ){
-                // insert error message in an error div
+                // @TODO: insert error message in an error div
                 console.log("Please enter a task")
             }else{
                 // call 'addTask' callback
                 props.taskCallbacks.addTask(e.target.value, props.todo_id)
-                // clear the input value and focus using its ref
-                textInput.current.value = '';
-                textInput.current.focus();
             }
             
         }
