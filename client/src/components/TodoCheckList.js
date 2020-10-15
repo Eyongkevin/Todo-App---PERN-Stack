@@ -18,13 +18,13 @@ const TodoCheckList =(props)=>{
      * Called only when the props.task length changes.
      * It clears the input value only when a successful add tasks was performed
      * 
-     * @TODO: It also clears when a task delete is done - Need to be fixed to prevent this.
+     * @TODO: It also clears each time this component re-renders. - Need to be fixed to prevent this.
      */
     useEffect(()=>{
         // clear the input value and focus using its ref only when props changes
         textInput.current.value = '';
         textInput.current.focus();
-    },[props.tasks.length])
+    })
 
     /**
      * Whenever a button is pressed, check if it's 'Enter' button, then 
