@@ -31,7 +31,7 @@ $ psql -U postgres
 
 # create 'todo_user' with password 'todo'. This is default, but you can change it.
 # If you change, make sure to edit the './sever/db.js' file with new credentials
-$ CREATE USER todo_user WITH PASSWORD todo;
+$ CREATE USER todo_user WITH PASSWORD 'todo';
 $ ALTER USER todo_user WITH CREATEDB;
 $ \q
 ```
