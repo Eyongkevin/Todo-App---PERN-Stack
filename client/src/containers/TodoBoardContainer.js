@@ -46,7 +46,7 @@ class TodoBoardContainer  extends Component{
                 const todo_data = data.todos
                 const task_data = Object.values(data.tasks)
                 // map todos into the different status.
-                let stages = new Object();
+                let stages = {};
                 STATUS.map((stage) => {
                     return stages[stage] =Array.prototype.filter.call(todo_data,(d)=> d.status === stage)
                 });

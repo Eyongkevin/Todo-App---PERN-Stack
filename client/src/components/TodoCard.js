@@ -10,6 +10,7 @@ import PropTypes from 'prop-types'
 import TodoCheckList from './TodoCheckList';
 import { stageColors } from '../utils/colors';
 import Status  from './Status';
+import ProgressBar from './ProgressBar'
 
 /**
  * Displays a todo card with bottons to edit, delete and change status. It uses the component 
@@ -47,7 +48,6 @@ const TodoCard =(props)=>{
         width: 7,
         backgroundColor: stageColors[status.replace(' ','_')]
     }
-
     /**
      * Toggle the value of the state 'showDetail' to either true or false.
      *  - If true, a downIcon(ChevronDownIcon) will be displayed on the card and a check list(TodoCheckList) 
@@ -60,6 +60,22 @@ const TodoCard =(props)=>{
         e.preventDefault(); // prevent default behavior 
         setShowDetail(!showDetail)
     }
+    /**
+     * Calculate the percentage of tasks completed for this todo
+     * 
+     * @returns { number } - percentage of completed tasks. It will be NaN if no tasks is present
+     */
+    const calc_progress=()=>{
+        // Get the number of tasks with 'done' equals to true
+        const dones_count = (props.todoTasks.filter((task) => task.done === true)).length
+
+        const total_count = props.todoTasks.length
+        return Math.floor((dones_count/total_count) * 100)
+    }
+    // Display progress bar only if percentage of completed tasks is not NaN
+    const tasks_progress =  isNaN(calc_progress())
+        ? <span className='no_tasks'>No Tasks</span>
+        : <ProgressBar progress={calc_progress()} />
    
     return(
         <Fragment>
@@ -69,7 +85,7 @@ const TodoCard =(props)=>{
                     <div className="row">
                         <div className="col-3">
                         <a href="#" onClick={(e)=> onChevronClick(e)}>{arrowBtn}</a>
-                        </div>
+                        </div>                       
                         <div className="col-9">
                             <span className="float-right">
                                 <a href="#"><PencilIcon className="IconBtns"  /></a>
@@ -83,6 +99,9 @@ const TodoCard =(props)=>{
                     <p className="card-text">
                         <span dangerouslySetInnerHTML={{__html:marked(description)}} />
                     </p>
+                    <div className="task_progression">
+                        { tasks_progress }
+                    </div>
                     <div className="card__details">
                         {detailDisplay}
                     </div> 

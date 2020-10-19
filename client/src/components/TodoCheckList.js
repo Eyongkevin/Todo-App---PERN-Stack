@@ -1,6 +1,7 @@
 import React, {Fragment, useRef, useEffect} from 'react';
 import { XCircleFillIcon } from '@primer/octicons-react'
 import PropTypes from 'prop-types';
+import marked from 'marked';
 
 import { TASK_COLORS } from '../constants/index'
 
@@ -38,7 +39,7 @@ const TodoCheckList =(props)=>{
         if(e.key === 'Enter'){
             // If the 'Enter' key was pressed
 
-            if(e.target.value.length == 0 ){
+            if(e.target.value.length === 0 ){
                 // @TODO: insert error message in an error div
                 console.log("Please enter a task")
             }else{
@@ -62,7 +63,8 @@ const TodoCheckList =(props)=>{
                     
                 </div>
                 <div className="col-9" >
-                    {task.task}
+                    <span dangerouslySetInnerHTML={{__html:marked(task.task)}} />
+                    
                 </div>
                 <div className="col-1">
                     <a href="#" onClick={

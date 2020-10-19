@@ -1,8 +1,8 @@
 # Todo Planner
 
-Are you obsessed about tasks planning and want to do things on time? but you don't have the means to pay for one? Then, **Todo Planner** is your tool.
+Are you obsessed about tasks planning and want to do things on time? but you don't have the means to pay for a tool? Then, **Todo Planner** is your friend.
 
-This is a tool that helps you plan your tasks easily. You can keep track of your tasks with the various states
+This is an open source tool that helps you plan your tasks easily. You can keep track of your tasks with the various states
 - **Tasks**: All tasks to be done but not yet started working on.
 - **Do Today**: Tasks to be completed today
 - **In Progress**: Tasks currently working on
@@ -11,6 +11,10 @@ This is a tool that helps you plan your tasks easily. You can keep track of your
 
 Also, if you are a developer, you can customize it to your liking. 
 
+## Coming Soon
+This tool is still under development. So far, this is the interface we have
+
+!['home'](./client/public/images/home.png)
 
 ## Installation
 This section will walk you through the installation process. You will be able to setup this tool on your personal computer and start using it to boost your productivity.
@@ -87,7 +91,3 @@ To better understand what is happening with the components and to better contrib
 $ npm run styleguide
 ```
 The server will start at http://localhost:6060/
-## Coming Soon
-This tool is still under development. So far, this is the interface we have
-
-!['home'](./client/public/images/home.png)
