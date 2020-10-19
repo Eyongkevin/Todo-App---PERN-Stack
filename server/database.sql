@@ -11,6 +11,7 @@ CREATE TABLE todochecklist(
     task VARCHAR(255),
     done BOOLEAN DEFAULT FALSE,
     task_id int4 DEFAULT 0,
+    color VARCHAR(10),
     created_at TIMESTAMP,
 
     FOREIGN KEY (task_id) REFERENCES todo(todo_id)

@@ -124,11 +124,11 @@ app.delete('/todo/:id', async(req, res) =>{
  // add task
  app.post('/task', async(req, res) =>{
      try{
-        const {task, task_id} = req.body;
+        const {task, color, task_id} = req.body;
         const created_at = new Date().toISOString();
         const addTask = await pool.query(
-             'INSERT INTO todochecklist (task, task_id, created_at) VALUES($1, $2, $3) RETURNING *',
-             [task, task_id, created_at]
+             'INSERT INTO todochecklist (task, task_id, color, created_at) VALUES($1, $2, $3, $4) RETURNING *',
+             [task, task_id, color, created_at]
          )
          res.json(addTask.rows[0])
      }

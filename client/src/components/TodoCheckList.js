@@ -42,8 +42,10 @@ const TodoCheckList =(props)=>{
                 // @TODO: insert error message in an error div
                 console.log("Please enter a task")
             }else{
+                // Randomly select a color to be set and background color for the task
+                const task_color = TASK_COLORS[Math.floor(Math.random() * TASK_COLORS.length)]
                 // call 'addTask' callback
-                props.taskCallbacks.addTask(e.target.value, props.todo_id)
+                props.taskCallbacks.addTask(e.target.value, props.todo_id, task_color)
             }
             
         }
@@ -51,11 +53,8 @@ const TodoCheckList =(props)=>{
 
     // for each sub-todo, create a template with a checkbotton and a delete icon.
     let tasks = props.tasks.map((task,idx) =>{
-        // @TODO: Probaly save colors for each task so that they won't change each time this component re-renders
-        const task_color = TASK_COLORS[Math.floor(Math.random() * TASK_COLORS.length)]
-
         return <li key={`task-${idx}`} className="checklist__task">
-            <div className="row" style={{backgroundColor: task_color}}>
+            <div className="row" style={{backgroundColor: task.color}}>
                 <div className="col-1">
                     <input type="checkbox" checked={task.done} onChange={
                         ()=>props.taskCallbacks.toggleTask(task.todochecklist_id)

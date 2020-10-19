@@ -108,9 +108,10 @@ class TodoBoardContainer  extends Component{
      * @param { String } value - the task to be added
      * @param { Number } id - todo id
      */
-    addTask =(value, id)=>{
+    addTask =(value, id, task_color)=>{
         const body={
             'task': value,
+            'color': task_color,
             'task_id': id
         }
         /** @async */
