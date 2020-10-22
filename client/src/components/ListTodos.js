@@ -1,81 +1,69 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment} from 'react';
+import PropTypes from 'prop-types'
 
-import EditTodo from './EditTodo'
-import Status from './Status'
+import TodoCard from './TodoCard';
+import { STATUS } from '../constants'
 
-const ListTodo = () =>{
-    const [todos, setTodos] = useState(false);
-
-    useEffect(() =>{
-        getAllTodos();
-    },[]) // [] here ensure that 'useEffect' only does one request after the component gets mount
-    
-    const getAllTodos = ()=>{
-        fetch('http://localhost:5000/todos',{
-            method: 'GET',
-        })
-            .then(response =>{
-                return response.json();
-            })
-            .then(data =>{
-                console.log(data);
-                setTodos(data);
-            });
+/* const titlePropType = (props, propName, componentName)=>{
+    if(props[propName]){
+        let notString = '';
+        let lenLongerThan80 = '';
+        let value = props[propName];
+        if(typeof value !== 'string')
+            notString = "Not a string";
+        if(value.length > 11)
+            lenLongerThan80 = "Longer than 80";
+        if(notString.length || lenLongerThan80.length)
+            return new Error(
+                `${propName} in ${componentName} is: ${notString}, ${lenLongerThan80}`
+            )
+        
     }
-    const deleteTodo =(id) =>{
-        fetch(`http://localhost:5000/todo/${id}`,{
-            method: 'DELETE'
-        })
-            .then(response =>{
-                return response.json();
-            })
-            .then(data =>{
-                console.log(data);
-                // It's wise to mimimize HTTP request.
-                //getAllTodos();
-                setTodos(todos.filter((todo) => todo.todo_id !== data.todo_id));
+} */
 
-            });
-    }
+/**
+ * Creates a list of todos
+ * 
+ * @param { str } props.title - status of the todo
+ * @param { array } props.todo - array containing our todos.
+ * @param { array } props.tasks - array containing all tasks
+ * @param { object } props.taskCallbacks - object of callback functions to change the state.
+ * 
+ * @author Eyong Kevin Enowanyo
+ */
+const ListTodos = (props) =>{
+    const { title, todo, tasks } = props
+    // Create an array of todo cards with all its tasks. A card display all details of a single todo
+    let cards = todo.map((card) =>{
+        // get all tasks belonging to this card
+        const todoTasks = tasks.filter((task) => task.task_id === card.todo_id)
+        return <TodoCard key={card.todo_id} card={card} todoTasks={todoTasks} taskCallbacks={props.taskCallbacks} />             
+    });
+
     return(
         <Fragment>
-            <table className="table mt-5 text-center table-borderless table-hover">
-                <thead className="thead-dark">
-                    <tr className="d-flex">
-                        <th className="col-8">Description</th>
-                        <th className="col-1">Edit</th>
-                        <th className="col-1">Delete</th>
-                        <th className="col-2">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {/* <tr>
-                        <td>John</td>
-                        <td>Doe</td>
-                        <td>john@example.com</td>
-                    </tr> */}
-                    {todos &&
-                    todos.map((todo) =>{
-                        return <tr key={todo.todo_id} className="d-flex">
-                                    <td className="col-sm-8">
-                                        {todo.description}
-                                    </td>
-                                    <td className="col-sm-1"><EditTodo  todo={todo}/></td>
-                                    <td className="col-sm-1">
-                                    <button 
-                                        className='btn btn-danger btn-sm'
-                                        onClick={()=>deleteTodo(todo.todo_id)}>Delete</button>
-                                    </td>
-                                    <td className="col-sm-2">
-                                        <Status todo_id={todo.todo_id} status={todo.status} />
-                                    </td>
-                                </tr>
-                    })
-                    }
-                </tbody>
-            </table>
+            <div className="list">
+                <h1>{title}</h1>
+                {cards}
+            </div>
+            
         </Fragment>
     )
 }
 
-export default ListTodo;
+
+ListTodos.propTypes = {
+    title: PropTypes.oneOf(STATUS),
+    todo: PropTypes.arrayOf(PropTypes.shape({
+        todo_id: PropTypes.number.isRequired,
+        description: PropTypes.string.isRequired,
+        status: PropTypes.string.isRequired,
+        done_timestamp: PropTypes.string
+    })).isRequired,
+    tasks: PropTypes.array,
+    id: PropTypes.string,
+    taskCallbacks: PropTypes.object.isRequired
+}
+
+export default ListTodos;
+

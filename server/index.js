@@ -1,8 +1,10 @@
 const express = require('express');
 const cors = require('cors');
+const mustache = require('mustache');
+const logger = require('morgan');
 const pool = require('./db').pool;
 const app = express();
-const port = 5000;
+const PORT = 5000;
 
 /** MIDDLEWARE
  * Middlewares break down your application into smaller bits of behavior.
@@ -15,21 +17,22 @@ app.use(express.json({
     // Since there are converted to text/plain when sent.
     type: ['application/json', 'text/plain']
 })); 
-
+app.use(logger('dev'));  // Set logger to monitor requests
 /** ROUTING
  * Break the application into smaller functions that execute base on condition.
- *  
  */
+
+ //********* TODOS ********* */
 
 // create a todo
 // - async allows us to use 'await' which will wait till this function execute before proceeding.
 // - 
 app.post('/todo', async(req, res) =>{
     try{
-        const {description, progress, status} = req.body;
+        const {description, done_timestamp, status} = req.body;
         const newTodo = await pool.query(
-            'INSERT INTO todo (description, progress, status) VALUES($1, $2, $3) RETURNING *',
-            [description, progress, status]
+            'INSERT INTO todo (description, status, done_timestamp) VALUES($1, $2, $3) RETURNING *',
+            [description, status, done_timestamp]
         );
         res.json(newTodo.rows[0]);
 
@@ -42,9 +45,16 @@ app.post('/todo', async(req, res) =>{
 app.get('/todos', async(_, res)=>{
     try{
         const allTodos = await pool.query(
-            'SELECT * FROM todo'
+            'SELECT * FROM todo;'
         );
-        res.json(allTodos.rows);
+        const allTasks = await pool.query(
+            'SELECT * FROM todochecklist;'
+        )
+        res.json({
+            'todos': allTodos.rows,
+            'tasks': allTasks.rows
+        });
+
 
     }catch(err){
         console.error(err.message);
@@ -92,8 +102,6 @@ app.put('/todo/status/:id', async(req, res) =>{
     }catch(err){
         console.error(err.message);
     }
-    
-
 })
 
 // delete a todo
@@ -111,7 +119,64 @@ app.delete('/todo/:id', async(req, res) =>{
     
 });
 
+ //********* CHECKLIST ********* */
+ 
+ // add task
+ app.post('/task', async(req, res) =>{
+     try{
+        const {task, color, task_id} = req.body;
+        const created_at = new Date().toISOString();
+        const addTask = await pool.query(
+             'INSERT INTO todochecklist (task, task_id, color, created_at) VALUES($1, $2, $3, $4) RETURNING *',
+             [task, task_id, color, created_at]
+         )
+         res.json(addTask.rows[0])
+     }
+     catch(err){
+         console.error(err.message);
+     }
+ })
+
+  // delete task
+  app.delete('/task/:id', async(req, res) =>{
+    try{
+        const { id } = req.params;
+        const deleteTask = await pool.query(
+            'DELETE FROM todochecklist WHERE todoCheckList_id=$1 RETURNING *',
+            [id]
+        )
+        res.json(deleteTask.rows[0]);
+    }catch(err){
+        console.error(err.message);
+    }
+    
+});
+
+app.put('/task/:id', async(req, res) =>{
+    try{
+        const { id } = req.params;
+        const { newDone } = req.body;
+        const updateTask = await pool.query(
+            'UPDATE todochecklist SET done=$1 WHERE todoCheckList_id=$2 RETURNING *',
+            [newDone, id]
+        )
+        res.json(updateTask.rows[0]);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+
+// 400 bad request if none above matches.
+app.use((req,res) =>{
+    res.statusCode = 400;
+    res.end("Error! Bad Request");
+})
+
 // Start Express server at port and logs  that it has started.
-app.listen(port, ()=>{
-    console.log("Server has started on port ", port);
+app.listen(PORT, ()=>{
+    const serverAlert = mustache.render("Server has started on port {{port}}",{
+        port: PORT
+    });
+    console.log(serverAlert);
 });
