@@ -1,4 +1,4 @@
-import React, {Fragment, useRef, useEffect} from 'react';
+import React, {Fragment, useRef, useEffect, useState} from 'react';
 import { XCircleFillIcon } from '@primer/octicons-react'
 import PropTypes from 'prop-types';
 import marked from 'marked';
@@ -14,21 +14,51 @@ import { TASK_COLORS } from '../constants/index'
  * @author Eyong Kevin Enowanyo
  */
 const TodoCheckList =(props)=>{
+    const [task_changed, setTaskChage] = useState(false)
+    const [prevTasks, setPrevTask] = useState(0)
     // to use the input object
     const textInput = useRef(null)
 
+
+    if(props.tasks.length > prevTasks){
+        /*
+        * If next tasks length is greater than previous one,
+        * set `task_changed` state and update the prevTasks value
+        * */
+        setTaskChage(!task_changed)
+        setPrevTask(props.tasks.length)
+    }
+    else if(props.tasks.length < prevTasks){
+        /*
+        * if next tasks length is smaller, just update prevTasks value. This is to ensure that
+        * if an input is done after a deleting, the condition above will still hold.
+        */
+        setPrevTask(props.tasks.length)
+    }
+
     /**
-     * Called only when the props.task length changes.
-     * It clears the input value only when a successful add tasks was performed
-     * 
-     * @TODO: It also clears each time this component re-renders. - Need to be fixed to prevent this.
+     * Run `clearInput` when component first mounts
      */
     useEffect(()=>{
-        // clear the input value and focus using its ref only when props changes
+        clearInput()
+    },[]) // runs only once.
+
+    /**
+     * Runs `clearInput` when component first mounts and 
+     * each time `task_changed` changes.
+     * 
+     */
+    useEffect(()=>{
+        clearInput()
+    },[task_changed]) 
+
+    /**
+     * Clear the input field and focus on the input field using its ref
+     */
+    const clearInput=()=>{
         textInput.current.value = '';
         textInput.current.focus();
-    })
-
+    }
     /**
      * Whenever a button is pressed, check if it's 'Enter' button, then 
      * call a callback if the input value is not zero. Then, clear the input value and focus
