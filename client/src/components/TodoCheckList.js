@@ -16,6 +16,7 @@ import { TASK_COLORS } from '../constants/index';
 const TodoCheckList =(props)=>{
     const [task_changed, setTaskChage] = useState(false);
     const [prevTasks, setPrevTask] = useState(0);
+    const [task_delete, setTaskDeleteChange]= useState(false);
     // to use the input object
     const textInput = useRef(null);
 
@@ -27,14 +28,16 @@ const TodoCheckList =(props)=>{
         * */
         setTaskChage(!task_changed);
         setPrevTask(props.tasks.length);
-    }
-    else if(props.tasks.length < prevTasks){
+
+    } else if(props.tasks.length < prevTasks){
         /*
         * if next tasks length is smaller, just update prevTasks value. This is to ensure that
         * if an input is done after a deleting, the condition above will still hold.
+        * Also, update the task_delete that will permit us to focus on the input at task delete.
         */
         setPrevTask(props.tasks.length);
-    }
+        setTaskDeleteChange(!task_delete);
+    } 
 
     /**
      * Run `clearInput` when component first mounts
@@ -51,6 +54,13 @@ const TodoCheckList =(props)=>{
     useEffect(()=>{
         clearInput();
     },[task_changed]);
+
+    /**
+     * On task delete, focus on the input. 
+     */
+    useEffect(()=>{
+        textInput.current.focus();
+    },[task_delete]);
 
     /**
      * Clear the input field and focus on the input field using its ref
