@@ -3,7 +3,7 @@ import { XCircleFillIcon } from '@primer/octicons-react'
 import PropTypes from 'prop-types';
 import marked from 'marked';
 
-import { TASK_COLORS } from '../constants/index'
+import { TASK_COLORS } from '../constants/index';
 
 
 /**
@@ -14,10 +14,10 @@ import { TASK_COLORS } from '../constants/index'
  * @author Eyong Kevin Enowanyo
  */
 const TodoCheckList =(props)=>{
-    const [task_changed, setTaskChage] = useState(false)
-    const [prevTasks, setPrevTask] = useState(0)
+    const [task_changed, setTaskChage] = useState(false);
+    const [prevTasks, setPrevTask] = useState(0);
     // to use the input object
-    const textInput = useRef(null)
+    const textInput = useRef(null);
 
 
     if(props.tasks.length > prevTasks){
@@ -25,23 +25,23 @@ const TodoCheckList =(props)=>{
         * If next tasks length is greater than previous one,
         * set `task_changed` state and update the prevTasks value
         * */
-        setTaskChage(!task_changed)
-        setPrevTask(props.tasks.length)
+        setTaskChage(!task_changed);
+        setPrevTask(props.tasks.length);
     }
     else if(props.tasks.length < prevTasks){
         /*
         * if next tasks length is smaller, just update prevTasks value. This is to ensure that
         * if an input is done after a deleting, the condition above will still hold.
         */
-        setPrevTask(props.tasks.length)
+        setPrevTask(props.tasks.length);
     }
 
     /**
      * Run `clearInput` when component first mounts
      */
     useEffect(()=>{
-        clearInput()
-    },[]) // runs only once.
+        clearInput();
+    },[]); // runs only once.
 
     /**
      * Runs `clearInput` when component first mounts and 
@@ -49,8 +49,8 @@ const TodoCheckList =(props)=>{
      * 
      */
     useEffect(()=>{
-        clearInput()
-    },[task_changed]) 
+        clearInput();
+    },[task_changed]);
 
     /**
      * Clear the input field and focus on the input field using its ref
@@ -58,6 +58,22 @@ const TodoCheckList =(props)=>{
     const clearInput=()=>{
         textInput.current.value = '';
         textInput.current.focus();
+    }
+    /**
+     * Get a random color to be used as background color for sub-tasks.
+     * Check to make sure subsequent tasks don't have the same color.
+     * @returns { String } task_color - color to use as background for sub-task
+     */
+    const getTaskColor=()=>{
+        // Get the last task's color
+        const last_task_color = props.tasks[props.tasks.length-1].color;
+        let task_color = last_task_color;
+
+        while(task_color == last_task_color){
+            // Get random color 
+            task_color = TASK_COLORS[Math.floor(Math.random() * TASK_COLORS.length)];
+        }
+        return task_color;
     }
     /**
      * Whenever a button is pressed, check if it's 'Enter' button, then 
@@ -71,10 +87,11 @@ const TodoCheckList =(props)=>{
 
             if(e.target.value.length === 0 ){
                 // @TODO: insert error message in an error div
-                console.log("Please enter a task")
+                console.log("Please enter a task");
             }else{
                 // Randomly select a color to be set and background color for the task
-                const task_color = TASK_COLORS[Math.floor(Math.random() * TASK_COLORS.length)]
+                const task_color = getTaskColor();
+
                 // call 'addTask' callback
                 props.taskCallbacks.addTask(e.target.value, props.todo_id, task_color)
             }
