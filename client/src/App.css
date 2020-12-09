@@ -33,7 +33,7 @@ ul {
   white-space: normal;
   height: 100%;
   width: 20%;
-  padding: 0 20px;
+  padding: 0 10px;
   overflow: auto;
   }
 .list:not(:last-child):after{
@@ -159,4 +159,23 @@ ul {
   from {
     transform: rotate(360deg);
  }
+}
+
+
+/********* Handle media responsiveness */
+
+/* Handle for my macbook 13 inch. */
+@media screen and (max-width: 1280px){
+  .checklist > ul{
+    font-size:  13px;
+    margin-left: -2px;
+  }
+  .checklist__task--remove{
+   height: 14px;
+
+  }
+  .task-text{
+    margin-left: -3%;
+    padding-right: 0px;
+  }
 }

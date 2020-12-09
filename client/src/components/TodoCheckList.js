@@ -92,15 +92,15 @@ const TodoCheckList =(props)=>{
                     }  />
                     
                 </div>
-                <div className="col-9" >
+                <div className="col-8 task-text" >
                     <span dangerouslySetInnerHTML={{__html:marked(task.task)}} />
                     
                 </div>
-                <div className="col-1">
+                <div className="col-1 task-remove">
                     <a href="#" onClick={
                         (e)=>props.taskCallbacks.deleteTask(e, task.todochecklist_id)
                     }>
-                        <XCircleFillIcon className="checklist__task--remove" />
+                        <XCircleFillIcon  className="checklist__task--remove" />
                     </a>
                 </div>
             </div>

@@ -32,7 +32,7 @@ import { STATUS } from '../constants'
  * @author Eyong Kevin Enowanyo
  */
 const ListTodos = (props) =>{
-    const { title, todo, tasks } = props
+    const { title, todo, tasks } = props;
     // Create an array of todo cards with all its tasks. A card display all details of a single todo
     let cards = todo.map((card) =>{
         // get all tasks belonging to this card
